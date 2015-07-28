@@ -47,19 +47,19 @@ function adminView(data) {
         self.sortBy(event.target.id);
     };
 
-    self.highlightRow = function(data, event) {  
+    self.highlightRow = function(data, event) {
         var row = event.currentTarget;
-        $(row).css("background","#E0EBF3"); 
+        $(row).css("background","#E0EBF3");
     };
 
     self.unhighlightRow = function(data, event) {
         var row = event.currentTarget;
-        $(row).css("background",""); 
+        $(row).css("background","");
     };
 
     self.formatTime = function(time) {
         var parsedTime = time.split(".");
-        return parsedTime[0]; 
+        return parsedTime[0];
     };
 
     self.goToDraft = function(data, event) {
