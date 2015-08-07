@@ -1,24 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 from adminInterface.models import AdminUser
 
-from .models import AdminUser
+# class AdminUserInline(admin.StackedInline):
+# 	model = AdminUser
+# 	can_delete = False
 
-class AdminUserInline(admin.StackedInline):
-	model = AdminUser
-	can_delete = False
+#class UserAdmin(UserAdmin):
+   # inlines = (AdminUserInline, )
+   # fields = ['user_permissions']
+   # exclude = ('first_name', 'last_name',)
 
-class UserAdmin(UserAdmin):
-    list_filter = ('is_staff', 'groups__name')
-    search_fields = ('username', 'email')
-    ordering = ('username',)
-    filter_horizontal = ('groups', 'user_permissions',)
+class PermissionAdmin(admin.ModelAdmin):
+	search_fields = ['name', 'codename']
 
-    inlines = (AdminUserInline, )
-
-# Register your models here.
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
-
+#admin.site.unregister(User)
+a#dmin.site.register(User, UserAdmin)
+admin.site.register(Permission, PermissionAdmin)

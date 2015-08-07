@@ -35,7 +35,7 @@ def get_mongo_client():
 
     return client
 
-client = get_mongo_client()    
+client = get_mongo_client()
 
 def _get_current_database():
     """Getter for `database` proxy.
@@ -51,7 +51,7 @@ def _get_current_database():
 
 
 def get_all_drafts():
-	# TODO 
+	# TODO
 	# add query parameters to only retrieve submitted drafts
 	all_drafts = DraftRegistration.find()
 
@@ -62,11 +62,11 @@ def get_all_drafts():
 	}
 	return serialized_drafts
 
-get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
 
 def get_draft(draft_pk):
 	auth = Auth(adminUser)
-	
+
 	draft = DraftRegistration.find(
         Q('_id', 'eq', draft_pk)
     )
