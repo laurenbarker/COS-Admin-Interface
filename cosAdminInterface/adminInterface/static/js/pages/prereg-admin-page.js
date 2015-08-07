@@ -24,7 +24,8 @@ var Assignee = function() {
     var self = this;
     self.edit = ko.observable(false);
     // TODO query db for prereg users
-    self.assignee = ko.observableArray(['none', 'Lauren', 'David', 'leb']);
+    self.reviewers = ko.observableArray(['none', 'Lauren', 'David', 'leb']);
+    self.assignee = ko.observable('none');
 };
 
 Assignee.prototype.enlargeIcon = function(data, event) {
@@ -118,15 +119,16 @@ Notes.prototype.stopEditing = function() {
     self.notes.edit(false);
 };
 
-var Row = function(params) {
+var Row = function(params, permission) {
     var self = this;
 
     self.params = params;
     self.viewingDraft = ko.observable(false);
+    self.adminPermission = ko.observable(permission);
 
     self.editing = ko.observable(false);
 
-    self.title = params.registration_metadata.q1.value;
+    self.title = params.registration_metadata.q01.value || "no title";
     self.fullname = params.initiator.fullname;
     self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
@@ -157,20 +159,19 @@ Row.prototype.formatTime = function(time) {
     return parsedTime[0]; 
 };
 
-// TODO
 Row.prototype.goToDraft = function(data, event) {
     var self = this;
     if (self.editing() === false) {
         self.viewingDraft(true);
-        //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
         document.location.href = '/prereg-form/' + self.params.pk + '/';
     }
 };
 
-var AdminView = function(adminSelector) {
+var AdminView = function(adminSelector, user) {
     var self = this;
 
     self.adminSelector = adminSelector;
+    self.user = user;
 
     self.getDrafts = $.getJSON.bind(null, "/get-drafts/");
 
@@ -204,7 +205,7 @@ AdminView.prototype.init = function() {
     getDrafts.then(function(response) {
         self.drafts(
             $.map(response.drafts, function(draft){
-                return new Row(draft);
+                return new Row(draft, self.user.admin);
             })
         );
     });
@@ -220,7 +221,8 @@ AdminView.prototype.setSort = function(data, event) {
 };
 
 $(document).ready(function() {
-    var adminView = new AdminView('#prereg-row');
+    var user = context;
+    var adminView = new AdminView('#prereg-row', user);
 });
 
 var deep_value = function(obj, path){

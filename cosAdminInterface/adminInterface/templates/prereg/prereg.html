@@ -3,6 +3,9 @@
 
 {% block content %}
 {% render_bundle 'vendor' %}
+<script>
+   var context = {{ user|safe }};
+</script>
 <h2>Pre-Registration Prize Admin View - Overview</h2>
 <div class="container-fluid" id="prereg-row">
     <div class="row row-title">
