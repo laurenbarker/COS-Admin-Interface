@@ -79,16 +79,16 @@ def users(request):
 @login_required
 @user_passes_test(is_in_prereg_group)
 def prereg(request):
-		# Permission use example
-	#testperm = request.user.has_perm('auth.add_group')
-	context = {'user': request.user}
-	#'testperm': testperm}
+	prereg_admin = request.user.has_perm('auth.prereg_admin')
+	context = {
+		'user': request.user,
+		'admin': prereg_admin
+	}
 	return render(request, 'prereg/prereg.html', context)
 
 @login_required
 def prereg_form(request, draft_pk):
 	draft = get_draft(draft_pk)
-	#import ipdb; ipdb.set_trace()
 	context = {'data': json.dumps(draft)}
 	return render(request, 'prereg/edit_draft_registration.html', context)
 
