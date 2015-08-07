@@ -79,7 +79,10 @@ def users(request):
 @login_required
 @user_passes_test(is_in_prereg_group)
 def prereg(request):
+		# Permission use example
+	#testperm = request.user.has_perm('auth.add_group')
 	context = {'user': request.user}
+	#'testperm': testperm}
 	return render(request, 'prereg/prereg.html', context)
 
 @login_required

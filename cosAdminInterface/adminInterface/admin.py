@@ -17,5 +17,5 @@ class PermissionAdmin(admin.ModelAdmin):
 	search_fields = ['name', 'codename']
 
 #admin.site.unregister(User)
-a#dmin.site.register(User, UserAdmin)
+#admin.site.register(User, UserAdmin)
 admin.site.register(Permission, PermissionAdmin)
