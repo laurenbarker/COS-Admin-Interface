@@ -1,13 +1,24 @@
-from database import get_all_drafts, get_schema, get_draft
+from database import get_all_drafts, get_schema, get_draft, get_draft_obj
+
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-
 from django.http import HttpResponse
+
 import json
 import utils
+import httplib as http
+
+from modularodm import Q
+
+from utils import submodule_path, serialize_draft_registration
+import sys
+sys.path.insert(0, submodule_path('utils.py'))
+from website.project.model import MetaSchema
+from framework.mongo.utils import get_or_http_error
 
 from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
@@ -99,3 +110,36 @@ def get_drafts(request):
 def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
+
+# TODO update so works in this context
+@login_required
+@csrf_exempt
+def update_draft(request, draft_pk): # (auth, node, draft_pk, *args, **kwargs):
+	
+	get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+
+	data = json.load(request)
+
+	draft = get_draft_obj(draft_pk)
+
+	schema_data = data['schema_data']
+
+	schema_name = data['schema_name']
+	schema_version = data['schema_version']
+
+	if schema_name:
+	    meta_schema = get_schema_or_fail(
+	        Q('name', 'eq', schema_name) &
+	        Q('schema_version', 'eq', schema_version)
+	    )
+
+	    existing_schema = draft[0].registration_schema
+	    if (existing_schema.name, existing_schema.schema_version) != (meta_schema.name, meta_schema.schema_version):
+	        draft[0].registration_schema = meta_schema
+
+	try:
+		draft[0].update_metadata(schema_data)
+	except (NodeStateError):
+	    raise HTTPError(http.BAD_REQUEST)
+	response = serialize_draft_registration(draft[0], draft[1])
+	return HttpResponse(json.dumps(response), content_type='application/json')
