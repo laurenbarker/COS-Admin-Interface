@@ -20,11 +20,15 @@ ko.bindingHandlers.enterkey = {
     }
 };
 
-var Assignee = function() {
+var Assignee = function(reviewers) {
     var self = this;
     self.edit = ko.observable(false);
-    // TODO query db for prereg users
-    self.reviewers = ko.observableArray(['none', 'Lauren', 'David', 'leb']);
+
+    if (reviewers[0] !== 'none') {
+        reviewers.unshift('none'); 
+    }
+    
+    self.reviewers = ko.observableArray(reviewers);
     self.assignee = ko.observable('none');
 };
 
@@ -119,7 +123,7 @@ Notes.prototype.stopEditing = function() {
     self.notes.edit(false);
 };
 
-var Row = function(params, permission) {
+var Row = function(params, permission, reviewers) {
     var self = this;
 
     self.params = params;
@@ -140,7 +144,7 @@ var Row = function(params, permission) {
     self.proofOfPub = new ProofOfPub();
     self.paymentSent = new PaymentSent();
     self.notes = new Notes();
-    self.assignee = new Assignee(); 
+    self.assignee = new Assignee(reviewers); 
 };
 
 
@@ -167,11 +171,12 @@ Row.prototype.goToDraft = function(data, event) {
     }
 };
 
-var AdminView = function(adminSelector, user) {
+var AdminView = function(adminSelector, user, reviewers) {
     var self = this;
 
     self.adminSelector = adminSelector;
     self.user = user;
+    self.reviewers = reviewers;
 
     self.getDrafts = $.getJSON.bind(null, "/get-drafts/");
 
@@ -205,7 +210,7 @@ AdminView.prototype.init = function() {
     getDrafts.then(function(response) {
         self.drafts(
             $.map(response.drafts, function(draft){
-                return new Row(draft, self.user.admin);
+                return new Row(draft, self.user.admin, self.reviewers);
             })
         );
     });
@@ -221,8 +226,9 @@ AdminView.prototype.setSort = function(data, event) {
 };
 
 $(document).ready(function() {
-    var user = context;
-    var adminView = new AdminView('#prereg-row', user);
+    var user = prereg_user;
+    var reviewers = prereg_reviewers;
+    var adminView = new AdminView('#prereg-row', user, reviewers);
 });
 
 var deep_value = function(obj, path){

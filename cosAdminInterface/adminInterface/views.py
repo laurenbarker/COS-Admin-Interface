@@ -24,6 +24,13 @@ from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
 import logging
 
+def get_prereg_users():
+	reviewers = []
+	users = User.objects.values('username')
+	for reviewer in users:
+		reviewers.append(str(reviewer['username']))
+	return reviewers
+
 def is_in_prereg_group(user):
 	return user.groups.filter(name='prereg_group').exists()
 
@@ -92,7 +99,9 @@ def users(request):
 def prereg(request):
 	prereg_admin = request.user.has_perm('auth.prereg_admin')
 	user = {'user': str(request.user.username), 'admin': json.dumps(prereg_admin)}
-	context = {'user': user}
+	reviewers = get_prereg_users()
+
+	context = {'user': user, 'reviewers': reviewers}
 	return render(request, 'prereg/prereg.html', context)
 
 @login_required
