@@ -51,7 +51,8 @@ Assignee.prototype.editItem = function() {
 var ProofOfPub = function() {
     var self = this;
     self.edit = ko.observable(false);
-    self.proofOfPub = ko.observableArray(['Published Article Not Yet Submitted', 'Published Article Submitted', 'Published Article Under Review', 'Published Article Approved', 'Published Article Rejected']);
+    self.proofOfPub = ko.observable('Published Article Not Yet Submitted');
+    self.proofOfPubList = ko.observableArray(['Published Article Not Yet Submitted', 'Published Article Submitted', 'Published Article Under Review', 'Published Article Approved', 'Published Article Rejected']);
 };
 
 ProofOfPub.prototype.enlargeIcon = function(data, event) {
