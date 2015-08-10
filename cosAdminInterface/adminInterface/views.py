@@ -26,9 +26,10 @@ import logging
 
 def get_prereg_users():
 	reviewers = []
-	users = User.objects.values('username')
+	users = User.objects.all()
 	for reviewer in users:
-		reviewers.append(str(reviewer['username']))
+		if (is_in_prereg_group(reviewer)):
+			reviewers.append(str(reviewer.username))
 	return reviewers
 
 def is_in_prereg_group(user):
