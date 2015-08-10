@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 	var draftEditor = new RegistrationEditor({
 	    schemas: '/get-schemas/',
-	    //update: node.urls.api + 'draft/{draft_pk}/',
+	    update: '/update-draft/{draft_pk}/',
 	    //get: node.urls.api + 'draft/{draft_pk}/'
 	}, 'registrationEditor');
 

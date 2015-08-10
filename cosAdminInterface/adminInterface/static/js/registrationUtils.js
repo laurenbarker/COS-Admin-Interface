@@ -276,7 +276,7 @@ Question.prototype.valid = function() {
         return validator(value, self.required);
     }
     else {
-        return validate([], value, self.required); 
+        return validate([], '', value, self.required); 
     }
 };
 
@@ -532,6 +532,8 @@ var RegistrationEditor = function(urls, editorId) {
 
     self.iterObject = $osf.iterObject;
 
+    self.extensions = {};
+
 };
 /**
  * Load draft data into the editor
@@ -595,17 +597,10 @@ RegistrationEditor.prototype.context = function(data) {
         save: this.save.bind(this),
         readonly: this.readonly
     });
-
+    if (this.extensions[data.type]) {
+        return new this.extensions[data.type](data);
+    }
     return data;
-};
-/**
- * Extend the editor's recognized types
- *
- * @param {String} type: unique type
- * @param {Constructor} ViewModel
- **/
-RegistrationEditor.prototype.extendEditor = function(type, ViewModel) {
-    this.extensions[type] = ViewModel;
 };
 RegistrationEditor.prototype.check = function() {
     var self = this;
@@ -622,7 +617,6 @@ RegistrationEditor.prototype.check = function() {
         window.location = self.draft().urls.register_page;
     }
 };
-
 RegistrationEditor.prototype.viewComments = function() {
   var self = this;
 
@@ -767,6 +761,11 @@ RegistrationEditor.prototype.submit = function() {
         }
     });
 };
+RegistrationEditor.prototype.putSaveData = function(payload) {
+    var self = this;
+
+    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+};
 RegistrationEditor.prototype.save = function() {
     var self = this;
 
@@ -794,24 +793,24 @@ RegistrationEditor.prototype.save = function() {
         });
     });
 
-    if (!self.draft().pk){
-        return self.create(data);
+    if (typeof self.draft().pk === 'undefined'){
+        self.create(self);
     }
-    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), {
-        schema_name: metaSchema.name,
-        schema_version: metaSchema.version,
-        schema_data: data
-    }).then(self.updateData.bind(self));
-
+    else{
+        self.putSaveData({
+            schema_name: metaSchema.name,
+            schema_version: metaSchema.version,
+            schema_data: data
+        });
+    }
     return true;
 };
 
-var RegistrationManager = function(node, draftsSelector, editorSelector, urls) {
+var RegistrationManager = function(node, draftsSelector, urls) {
     var self = this;
 
     self.node = node;
     self.draftsSelector = draftsSelector;
-    self.editorSelector = editorSelector;
 
     self.urls = urls;
 
@@ -850,33 +849,6 @@ RegistrationManager.prototype.init = function() {
     var self = this;
 
     $osf.applyBindings(self, self.draftsSelector);
-
-    var getSchemas = self.getSchemas();
-
-    getSchemas.then(function(response) {
-        self.schemas(
-            $.map(response.meta_schemas, function(schema) {
-                return new MetaSchema(schema);
-            })
-        );
-    });
-
-    var getDraftRegistrations = self.getDraftRegistrations();
-
-    getDraftRegistrations.then(function(response) {
-        self.drafts(
-            $.map(response.drafts, function(draft) {
-                return new Draft(draft);
-            })
-        );
-    });
-
-    $.when(getSchemas, getDraftRegistrations).then(function() {
-        self.loading(false);
-    });
-};
-RegistrationManager.prototype.refresh = function() {
-    var self = this;
 
     var getSchemas = self.getSchemas();
 

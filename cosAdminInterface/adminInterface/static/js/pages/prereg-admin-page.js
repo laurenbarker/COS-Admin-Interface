@@ -126,7 +126,7 @@ var Row = function(params) {
 
     self.editing = ko.observable(false);
 
-    self.title = params.registration_metadata.q1.value;
+    self.title = params.registration_metadata.q01.value;
     self.fullname = params.initiator.fullname;
     self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
