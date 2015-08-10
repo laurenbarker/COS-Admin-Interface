@@ -129,6 +129,11 @@ var Row = function(params, permission, reviewers) {
 
     self.params = params;
     self.viewingDraft = ko.observable(false);
+    if (permission === "false") {
+        permission = false;
+    } else {
+        permission = true;
+    }
     self.adminPermission = ko.observable(permission);
 
     self.editing = ko.observable(false);
