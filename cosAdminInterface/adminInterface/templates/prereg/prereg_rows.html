@@ -6,7 +6,7 @@
     <div data-bind="text: updated" class="col-lg-1 text-center" id="submitted"></div>
     <!-- Proof of Publication -->
     <div class="col-lg-2 text-center" id="proof_of_pub">
-        <select data-bind="options: proofOfPub.proofOfPub, click: proofOfPub.editItem, clickBubble: false"></select>
+        <select data-bind="options: proofOfPub.proofOfPubList, value:proofOfPub.proofOfPub, click: proofOfPub.editItem, clickBubble: false"></select>
     </div>
     <!-- Payment Sent -->
     <div class="col-lg-1 text-center" id="payment_sent">
@@ -31,6 +31,7 @@
     <div data-bind="text: status" class="col-lg-1 text-center" id="status"></div>
     <!-- Assignee -->
     <div class="col-lg-1 text-center" id="assignee">
-        <select data-bind="options: assignee.assignee, click: assignee.editItem, clickBubble: false"></select>
+        <select data-bind="visible: adminPermission() ,value: assignee.assignee, options: assignee.reviewers, click: assignee.editItem, clickBubble: false"></select>
+        <span data-bind="visible: !adminPermission(), text: assignee.assignee, click: assignee.editItem, clickBubble: false"></span>
     </div>
 </div>

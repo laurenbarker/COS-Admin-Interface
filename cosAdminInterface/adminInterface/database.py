@@ -23,10 +23,8 @@ init_addons(osf_settings, routes=False)
 do_set_backends(osf_settings)
 adminUser = User.load('dsmpw')
 
-# create new instance of a class and then use .save to update db
-
 def get_all_drafts():
-	# TODO 
+	# TODO
 	# add query parameters to only retrieve submitted drafts
 	all_drafts = DraftRegistration.find()
 
@@ -37,11 +35,11 @@ def get_all_drafts():
 	}
 	return serialized_drafts
 
-get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
 
 def get_draft(draft_pk):
 	auth = Auth(adminUser)
-	
+
 	draft = DraftRegistration.find(
         Q('_id', 'eq', draft_pk)
     )

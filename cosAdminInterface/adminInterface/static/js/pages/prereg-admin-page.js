@@ -20,11 +20,16 @@ ko.bindingHandlers.enterkey = {
     }
 };
 
-var Assignee = function() {
+var Assignee = function(reviewers) {
     var self = this;
     self.edit = ko.observable(false);
-    // TODO query db for prereg users
-    self.assignee = ko.observableArray(['none', 'Lauren', 'David', 'leb']);
+
+    if (reviewers[0] !== 'none') {
+        reviewers.unshift('none'); 
+    }
+    
+    self.reviewers = ko.observableArray(reviewers);
+    self.assignee = ko.observable('none');
 };
 
 Assignee.prototype.enlargeIcon = function(data, event) {
@@ -46,7 +51,8 @@ Assignee.prototype.editItem = function() {
 var ProofOfPub = function() {
     var self = this;
     self.edit = ko.observable(false);
-    self.proofOfPub = ko.observableArray(['Published Article Not Yet Submitted', 'Published Article Submitted', 'Published Article Under Review', 'Published Article Approved', 'Published Article Rejected']);
+    self.proofOfPub = ko.observable('Published Article Not Yet Submitted');
+    self.proofOfPubList = ko.observableArray(['Published Article Not Yet Submitted', 'Published Article Submitted', 'Published Article Under Review', 'Published Article Approved', 'Published Article Rejected']);
 };
 
 ProofOfPub.prototype.enlargeIcon = function(data, event) {
@@ -118,15 +124,21 @@ Notes.prototype.stopEditing = function() {
     self.notes.edit(false);
 };
 
-var Row = function(params) {
+var Row = function(params, permission, reviewers) {
     var self = this;
 
     self.params = params;
     self.viewingDraft = ko.observable(false);
+    if (permission === "false") {
+        permission = false;
+    } else {
+        permission = true;
+    }
+    self.adminPermission = ko.observable(permission);
 
     self.editing = ko.observable(false);
 
-    self.title = params.registration_metadata.q01.value;
+    self.title = params.registration_metadata.q01.value || "no title";
     self.fullname = params.initiator.fullname;
     self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
@@ -138,7 +150,7 @@ var Row = function(params) {
     self.proofOfPub = new ProofOfPub();
     self.paymentSent = new PaymentSent();
     self.notes = new Notes();
-    self.assignee = new Assignee(); 
+    self.assignee = new Assignee(reviewers); 
 };
 
 
@@ -157,20 +169,20 @@ Row.prototype.formatTime = function(time) {
     return parsedTime[0]; 
 };
 
-// TODO
 Row.prototype.goToDraft = function(data, event) {
     var self = this;
     if (self.editing() === false) {
         self.viewingDraft(true);
-        //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
         document.location.href = '/prereg-form/' + self.params.pk + '/';
     }
 };
 
-var AdminView = function(adminSelector) {
+var AdminView = function(adminSelector, user, reviewers) {
     var self = this;
 
     self.adminSelector = adminSelector;
+    self.user = user;
+    self.reviewers = reviewers;
 
     self.getDrafts = $.getJSON.bind(null, "/get-drafts/");
 
@@ -204,7 +216,7 @@ AdminView.prototype.init = function() {
     getDrafts.then(function(response) {
         self.drafts(
             $.map(response.drafts, function(draft){
-                return new Row(draft);
+                return new Row(draft, self.user.admin, self.reviewers);
             })
         );
     });
@@ -220,7 +232,9 @@ AdminView.prototype.setSort = function(data, event) {
 };
 
 $(document).ready(function() {
-    var adminView = new AdminView('#prereg-row');
+    var user = prereg_user;
+    var reviewers = prereg_reviewers;
+    var adminView = new AdminView('#prereg-row', user, reviewers);
 });
 
 var deep_value = function(obj, path){

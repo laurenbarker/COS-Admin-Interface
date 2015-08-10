@@ -3,12 +3,11 @@
 
 {% block content %}
 {% render_bundle 'vendor' %}
+<script>
+   var prereg_user = {{ user_info|safe }};
+   var prereg_reviewers = {{ reviewers|safe }};
+</script>
 <h2>Pre-Registration Prize Admin View - Overview</h2>
-<!--
-{% if testperm %}
-<span>I am an annoying piece of text</span>
-{% endif %}
--->
 <div class="container-fluid" id="prereg-row">
     <div class="row row-title">
         <div class="col-lg-1 row-title text-center"><a id="title" data-bind="click: setSort">Submission Title</a></div>
@@ -20,7 +19,7 @@
         <div class="col-lg-1 row-title text-center"><a id="paymenSent.paymentSent()" data-bind="click: setSort">Payment Sent</a></div>
         <div class="col-lg-1 row-title text-center"><a id="notes.notes()" data-bind="click: setSort">Notes</a></div>
         <div class="col-lg-1 row-title text-center"><a id="status" data-bind="click: setSort">Status</a></div>
-        <div class="col-lg-1 row-title text-center"><a id="assignee" data-bind="click: setSort">Assignee</a></div>
+        <div class="col-lg-1 row-title text-center"><a id="assignee.assignee()" data-bind="click: setSort">Assignee</a></div>
     </div>
     <div id="overview">
         <div class="row scripted">
