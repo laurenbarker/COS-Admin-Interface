@@ -19,7 +19,7 @@ def serialize_draft_registration(draft, auth=None):
     import sys
     sys.path.insert(0, submodule_path('utils.py'))
     from website.profile.utils import serialize_user  # noqa
-    #import ipdb; ipdb.set_trace()
+
     node = draft.branched_from
     
     return {
@@ -30,7 +30,7 @@ def serialize_draft_registration(draft, auth=None):
         'registration_schema': serialize_meta_schema(draft.registration_schema),
         'initiated': str(draft.datetime_initiated),
         'updated': str(draft.datetime_updated),
-        'config': draft.config or {},
+        'approval': draft.approval,
         'flags': draft.flags,
         # 'urls': {
         #     'edit': node.web_url_for('edit_draft_registration_page', draft_id=draft._id),
