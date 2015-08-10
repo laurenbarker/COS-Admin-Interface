@@ -4,7 +4,7 @@
 {% block content %}
 {% render_bundle 'vendor' %}
 <script>
-   var prereg_user = {{ user|safe }};
+   var prereg_user = {{ user_info|safe }};
    var prereg_reviewers = {{ reviewers|safe }};
 </script>
 <h2>Pre-Registration Prize Admin View - Overview</h2>

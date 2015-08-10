@@ -99,10 +99,10 @@ def users(request):
 @user_passes_test(is_in_prereg_group)
 def prereg(request):
 	prereg_admin = request.user.has_perm('auth.prereg_admin')
-	user = {'user': str(request.user.username), 'admin': json.dumps(prereg_admin)}
+	user = {'username': str(request.user.username), 'admin': json.dumps(prereg_admin)}
 	reviewers = get_prereg_users()
 
-	context = {'user': user, 'reviewers': reviewers}
+	context = {'user_info': user, 'reviewers': reviewers, 'user': request.user}
 	return render(request, 'prereg/prereg.html', context)
 
 @login_required
