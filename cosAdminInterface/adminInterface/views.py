@@ -128,15 +128,16 @@ def approve_draft(request, draft_pk):
 
 	draft = get_draft_obj(draft_pk)
 
-	user = User.load('dsmpw')
-	draftRegistrationApproval = draft[0].approval
-	import ipdb; ipdb.set_trace()
 	# need to pass self, user, and token
 	# user should be the admin 
+	user = User.load('dsmpw')
+	draftRegistrationApproval = draft[0].approval
+	#import ipdb; ipdb.set_trace()
+	
 	draftRegistrationApproval.add_authorizer(user)
 	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
 	draftRegistrationApproval.approve(user, token)
-
+	return HttpResponse(True)
 	
 
 @login_required
