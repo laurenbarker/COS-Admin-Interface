@@ -2,4 +2,4 @@
 	path = cosAdminInterface/adminInterface/osf.io
 	url = https://github.com/samchrisinger/osf.io.git
 [submodule "osf.io"]
-	branch = feature/prereg-prize
+	branch = feature/prereg-prize-2
