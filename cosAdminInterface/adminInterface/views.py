@@ -17,7 +17,8 @@ from modularodm import Q
 from utils import submodule_path, serialize_draft_registration
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
-from website.project.model import MetaSchema
+from framework.auth.core import User
+from website.project.model import MetaSchema, DraftRegistrationApproval
 from framework.mongo.utils import get_or_http_error
 
 from adminInterface.forms import RegistrationForm, LoginForm
@@ -121,10 +122,26 @@ def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
 
-# TODO update so works in this context
 @login_required
 @csrf_exempt
-def update_draft(request, draft_pk): # (auth, node, draft_pk, *args, **kwargs):
+def approve_draft(request, draft_pk):
+
+	draft = get_draft_obj(draft_pk)
+
+	user = User.load('dsmpw')
+	draftRegistrationApproval = draft[0].approval
+	import ipdb; ipdb.set_trace()
+	# need to pass self, user, and token
+	# user should be the admin 
+	draftRegistrationApproval.add_authorizer(user)
+	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
+	draftRegistrationApproval.approve(user, token)
+
+	
+
+@login_required
+@csrf_exempt
+def update_draft(request, draft_pk):
 	
 	get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
 
