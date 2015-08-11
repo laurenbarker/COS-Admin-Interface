@@ -805,6 +805,22 @@ RegistrationEditor.prototype.save = function() {
     }
     return true;
 };
+// TODO: add functions for these
+RegistrationEditor.prototype.approve = function() {
+    var self = this;
+
+    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+};
+RegistrationEditor.prototype.reject = function() {
+    var self = this;
+
+    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+};
+RegistrationEditor.prototype.requestRevisions = function() {
+    var self = this;
+
+    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+};
 
 var RegistrationManager = function(node, draftsSelector, urls) {
     var self = this;
