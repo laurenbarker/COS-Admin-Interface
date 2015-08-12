@@ -140,6 +140,25 @@ def approve_draft(request, draft_pk):
 
 	response = serialize_draft_registration_approval(draftRegistrationApproval)
 	return HttpResponse(json.dumps(response), content_type='application/json')
+
+@login_required
+@csrf_exempt
+def reject_draft(request, draft_pk):
+
+	draft = get_draft_obj(draft_pk)
+
+	# need to pass self, user, and token
+	# user should be the admin 
+	user = osf_user.load('dsmpw')
+	draftRegistrationApproval = draft[0].approval
+	
+	draftRegistrationApproval.add_authorizer(user)
+	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
+	draftRegistrationApproval.reject(user, token)
+	draftRegistrationApproval.save()
+
+	response = serialize_draft_registration_approval(draftRegistrationApproval)
+	return HttpResponse(json.dumps(response), content_type='application/json')
 	
 @login_required
 @csrf_exempt

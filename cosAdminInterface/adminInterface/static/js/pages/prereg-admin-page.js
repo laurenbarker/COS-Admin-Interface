@@ -143,7 +143,7 @@ var Row = function(params, permission, reviewers) {
     self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
     self.updated = self.formatTime(params.updated);
-    // this will be in flags when using the proper branch
+    // change to computed function
     self.status = ko.observable(params.approval.state);
     
     //variables for editing items in row

@@ -803,11 +803,6 @@ RegistrationEditor.prototype.save = function() {
     return true;
 };
 // TODO: add functions for these
-RegistrationEditor.prototype.putSaveApprovalData = function(payload) {
-    var self = this;
-
-    $osf.putJSON(self.urls.update_approval.replace('{approval_pk}', self.draft().approval._id), payload).then(self.updateData.bind(self));
-};
 RegistrationEditor.prototype.approve = function() {
     var self = this;
 
@@ -819,12 +814,16 @@ RegistrationEditor.prototype.approve = function() {
 RegistrationEditor.prototype.reject = function() {
     var self = this;
 
-    $osf.putJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+    $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+
+    window.location.href = self.urls.home;
 };
 RegistrationEditor.prototype.requestRevisions = function() {
     var self = this;
 
-    $osf.putJSON(self.urls.requestRevisions.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+    $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+
+    window.location.href = self.urls.home;
 };
 
 var RegistrationManager = function(node, draftsSelector, urls) {
