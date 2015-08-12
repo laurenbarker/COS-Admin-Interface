@@ -13,7 +13,6 @@ urlpatterns = [
 	url(r'^prereg-form/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.prereg_form', name='prereg_form'),
 	url(r'^approve-draft/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.approve_draft', name='approve_draft'),
 	url(r'^update-draft/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.update_draft', name='update_draft'),
-	url(r'^update-approval/(?P<approval_pk>[0-9a-z]+)/$', 'adminInterface.views.update_approval', name='update_approval'),
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
 	url(r'^get-schemas/$', 'adminInterface.views.get_schemas', name='get_schemas'),
     url(r'^admin/', include(admin.site.urls)),

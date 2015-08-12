@@ -811,12 +811,9 @@ RegistrationEditor.prototype.putSaveApprovalData = function(payload) {
 RegistrationEditor.prototype.approve = function() {
     var self = this;
 
-    $.getJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk)).then(function(response) {
-        self.putSaveApprovalData({
-            approval_state: response.approval_state,
-            _id: response._id
-        });
-    });
+    $osf.postJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+
+    window.location.href = self.urls.home;
 
 };
 RegistrationEditor.prototype.reject = function() {

@@ -136,47 +136,9 @@ def approve_draft(request, draft_pk):
 	draftRegistrationApproval.add_authorizer(user)
 	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
 	draftRegistrationApproval.approve(user, token)
+	draftRegistrationApproval.save()
 
 	response = serialize_draft_registration_approval(draftRegistrationApproval)
-	return HttpResponse(json.dumps(response), content_type='application/json')
-
-@login_required
-@csrf_exempt
-def update_approval(request, approval_pk):
-	
-	get_approval_or_fail = lambda query: get_or_http_error(DraftRegistrationApproval, query)	
-
-	data = json.load(request)
-
-	approval = get_approval_obj(approval_pk)
-
-	approval_state = data['approval_state']
-	approval_id = data['_id']
-
-
-	if approval_id:
-	    approval_data = get_approval_or_fail(
-	        Q('_id', 'eq', approval_id)
-	    )
-
-	    existing_approval = approval[0]
-	    if (existing_approval._id) != (approval_data._id):
-	        approval[0].approval_state = approval_state
-
-	try:
-		# TODO: make save function for DraftRegistrationApproval
-		import ipdb; ipdb.set_trace()
-		# approval[0].update({
-		# 	'approval_state': approval_state,
-		# 	'state': 'approved'
-		# })
-		approval[0].approval_state.update(approval_state)
-		approval[0].state = 'approved'
-		approval[0].save()
-		
-	except (NodeStateError):
-	    raise HTTPError(http.BAD_REQUEST)
-	response = serialize_draft_registration_approval(approval[0])
 	return HttpResponse(json.dumps(response), content_type='application/json')
 	
 @login_required
