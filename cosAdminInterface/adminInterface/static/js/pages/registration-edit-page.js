@@ -11,7 +11,8 @@ $(document).ready(function() {
 	    schemas: '/get-schemas/',
 	    update: '/update-draft/{draft_pk}/',
 	    approve: '/approve-draft/{draft_pk}/',
-	    //update_approval: '/update-approval/{approval_pk}/',
+	    reject: '/reject-draft/{draft_pk}/',
+	    request_revisions: '/reject-draft/{draft_pk}/',
 	    home: '/prereg/'
 	    //get: node.urls.api + 'draft/{draft_pk}/'
 	}, 'registrationEditor');

@@ -144,7 +144,6 @@ def approve_draft(request, draft_pk):
 @login_required
 @csrf_exempt
 def reject_draft(request, draft_pk):
-
 	draft = get_draft_obj(draft_pk)
 
 	# need to pass self, user, and token
@@ -153,7 +152,8 @@ def reject_draft(request, draft_pk):
 	draftRegistrationApproval = draft[0].approval
 	
 	draftRegistrationApproval.add_authorizer(user)
-	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
+	token = draftRegistrationApproval.approval_state[user._id]['rejection_token']
+
 	draftRegistrationApproval.reject(user, token)
 	draftRegistrationApproval.save()
 

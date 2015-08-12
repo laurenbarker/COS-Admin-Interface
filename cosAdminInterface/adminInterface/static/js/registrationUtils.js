@@ -802,7 +802,6 @@ RegistrationEditor.prototype.save = function() {
     }
     return true;
 };
-// TODO: add functions for these
 RegistrationEditor.prototype.approve = function() {
     var self = this;
 
@@ -818,10 +817,11 @@ RegistrationEditor.prototype.reject = function() {
 
     window.location.href = self.urls.home;
 };
+// TODO: add additional logic so it differs from rejection
 RegistrationEditor.prototype.requestRevisions = function() {
     var self = this;
 
-    $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+    $osf.postJSON(self.urls.request_revisions.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
 
     window.location.href = self.urls.home;
 };

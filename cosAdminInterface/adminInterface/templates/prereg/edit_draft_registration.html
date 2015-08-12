@@ -20,13 +20,15 @@
                         }" class="btn btn-success" type="button">
             <i class="fa fa-check"></i> Approve
           </a>
-          <a data-bind="tooltip: {
+          <a data-bind="click: $root.reject,
+                        tooltip: {
                           position: 'top',
                           title: 'Reject'
                         }" class="btn btn-danger" type="button">
             <i class="fa fa-remove"></i> Reject
           </a>
-          <a data-bind="tooltip: {
+          <a data-bind="click: $root.request_revisions,
+                        tooltip: {
                           position: 'top',
                           title: 'Request Revisions'
                         }" class="btn btn-primary" type="button">
