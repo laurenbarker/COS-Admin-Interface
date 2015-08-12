@@ -148,8 +148,6 @@ def update_approval(request, approval_pk):
 
 	data = json.load(request)
 
-	import ipdb; ipdb.set_trace()
-
 	approval = get_approval_obj(approval_pk)
 
 	approval_state = data['approval_state']
@@ -167,9 +165,14 @@ def update_approval(request, approval_pk):
 
 	try:
 		# TODO: make save function for DraftRegistrationApproval
-		approval[0].update(data)
-        if save:
-            self.save()
+		import ipdb; ipdb.set_trace()
+		# approval[0].update({
+		# 	'approval_state': approval_state,
+		# 	'state': 'approved'
+		# })
+		approval[0].approval_state.update(approval_state)
+		approval[0].state = 'approved'
+		approval[0].save()
 		
 	except (NodeStateError):
 	    raise HTTPError(http.BAD_REQUEST)
