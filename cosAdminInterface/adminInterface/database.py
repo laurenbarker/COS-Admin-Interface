@@ -9,7 +9,7 @@ from modularodm import storage
 from utils import submodule_path
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
-from website.project.model import MetaSchema, DraftRegistration, Node
+from website.project.model import MetaSchema, DraftRegistration, Node, DraftRegistrationApproval
 from framework.mongo.utils import get_or_http_error
 from framework.auth.core import User
 from framework.auth import Auth
@@ -54,6 +54,15 @@ def get_draft_obj(draft_pk):
     )
 
 	return draft[0], auth
+
+def get_approval_obj(approval_pk):
+	auth = Auth(adminUser)
+	
+	approval= DraftRegistrationApproval.find(
+        Q('_id', 'eq', approval_pk)
+    )
+
+	return approval[0], auth
 
 def get_schema():
 	all_schemas = MetaSchema.find()

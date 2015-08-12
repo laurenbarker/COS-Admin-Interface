@@ -371,18 +371,15 @@ var Draft = function(params, metaSchema) {
 
     self.urls = params.urls || {};
 
-    // TODO: uncomment to support draft approval states
-    //    self.fulfills = params.fulfills || [];
-    //    self.isPendingReview = params.flags.isPendingReview || false;
-    //    self.requiresApproval = params.config.requiresApproval || false;
-    //    self.isApproved = params.flags.isApproved || true;
-    //
-    //   $.each(params.config || {}, function(key, value) {
-    //        self[key] = value;
-    //    });
-    //    $.each(params.flags || {}, function(key, value) {
-    //        self[key] = value;
-    //    });
+    //TODO: uncomment to support draft approval states
+    self.isPendingReview = params.flags.isPendingReview || false;
+    self.requiresApproval = params.requiresApproval || false;
+    self.isApproved = params.flags.isApproved || true;
+    self.approval = params.approval || {};
+
+    $.each(params.flags || {}, function(key, value) {
+       self[key] = value;
+    });
 
     self.completion = ko.computed(function() {
         var total = 0;
@@ -806,20 +803,31 @@ RegistrationEditor.prototype.save = function() {
     return true;
 };
 // TODO: add functions for these
+RegistrationEditor.prototype.putSaveApprovalData = function(payload) {
+    var self = this;
+
+    $osf.putJSON(self.urls.update_approval.replace('{approval_pk}', self.draft().approval._id), payload).then(self.updateData.bind(self));
+};
 RegistrationEditor.prototype.approve = function() {
     var self = this;
 
-    $osf.putJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk)).then(self.updateData.bind(self));
+    $.getJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk)).then(function(response) {
+        self.putSaveApprovalData({
+            approval_state: response.approval_state,
+            _id: response._id
+        });
+    });
+
 };
 RegistrationEditor.prototype.reject = function() {
     var self = this;
 
-    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+    $osf.putJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
 };
 RegistrationEditor.prototype.requestRevisions = function() {
     var self = this;
 
-    $osf.putJSON(self.urls.update.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
+    $osf.putJSON(self.urls.requestRevisions.replace('{draft_pk}', self.draft().pk), payload).then(self.updateData.bind(self));
 };
 
 var RegistrationManager = function(node, draftsSelector, urls) {

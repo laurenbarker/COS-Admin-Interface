@@ -1,4 +1,4 @@
-from database import get_all_drafts, get_schema, get_draft, get_draft_obj
+from database import get_all_drafts, get_schema, get_draft, get_draft_obj, get_approval_obj
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
@@ -14,10 +14,10 @@ import httplib as http
 
 from modularodm import Q
 
-from utils import submodule_path, serialize_draft_registration
+from utils import submodule_path, serialize_draft_registration, serialize_draft_registration_approval
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
-from framework.auth.core import User
+from framework.auth.core import User as osf_user
 from website.project.model import MetaSchema, DraftRegistrationApproval
 from framework.mongo.utils import get_or_http_error
 
@@ -130,16 +130,52 @@ def approve_draft(request, draft_pk):
 
 	# need to pass self, user, and token
 	# user should be the admin 
-	user = User.load('dsmpw')
+	user = osf_user.load('dsmpw')
 	draftRegistrationApproval = draft[0].approval
-	#import ipdb; ipdb.set_trace()
 	
 	draftRegistrationApproval.add_authorizer(user)
 	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
 	draftRegistrationApproval.approve(user, token)
-	return HttpResponse(True)
-	
 
+	response = serialize_draft_registration_approval(draftRegistrationApproval)
+	return HttpResponse(json.dumps(response), content_type='application/json')
+
+@login_required
+@csrf_exempt
+def update_approval(request, approval_pk):
+	
+	get_approval_or_fail = lambda query: get_or_http_error(DraftRegistrationApproval, query)	
+
+	data = json.load(request)
+
+	import ipdb; ipdb.set_trace()
+
+	approval = get_approval_obj(approval_pk)
+
+	approval_state = data['approval_state']
+	approval_id = data['_id']
+
+
+	if approval_id:
+	    approval_data = get_approval_or_fail(
+	        Q('_id', 'eq', approval_id)
+	    )
+
+	    existing_approval = approval[0]
+	    if (existing_approval._id) != (approval_data._id):
+	        approval[0].approval_state = approval_state
+
+	try:
+		# TODO: make save function for DraftRegistrationApproval
+		approval[0].update(data)
+        if save:
+            self.save()
+		
+	except (NodeStateError):
+	    raise HTTPError(http.BAD_REQUEST)
+	response = serialize_draft_registration_approval(approval[0])
+	return HttpResponse(json.dumps(response), content_type='application/json')
+	
 @login_required
 @csrf_exempt
 def update_draft(request, draft_pk):
