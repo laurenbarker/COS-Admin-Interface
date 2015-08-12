@@ -371,7 +371,7 @@ var Draft = function(params, metaSchema) {
 
     self.urls = params.urls || {};
 
-    //TODO: uncomment to support draft approval states
+    //TODO[lauren]: make observables to support draft approval states
     self.isPendingReview = params.flags.isPendingReview || false;
     self.requiresApproval = params.requiresApproval || false;
     self.isApproved = params.flags.isApproved || true;
@@ -817,7 +817,7 @@ RegistrationEditor.prototype.reject = function() {
 
     window.location.href = self.urls.home;
 };
-// TODO: add additional logic so it differs from rejection
+// TODO[lauren]: add additional logic so it differs from rejection
 RegistrationEditor.prototype.requestRevisions = function() {
     var self = this;
 
