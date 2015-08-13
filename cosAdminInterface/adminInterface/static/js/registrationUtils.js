@@ -805,25 +805,72 @@ RegistrationEditor.prototype.save = function() {
 RegistrationEditor.prototype.approve = function() {
     var self = this;
 
-    $osf.postJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+    var message = '<p>This submission will be registered on approval.';
 
-    window.location.href = self.urls.home;
+    $osf.confirmDangerousAction({
+        title: 'Are you sure you want to approve and register this submission?',
+        message: message,
+        callback: function () {
+            var request = $osf.postJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+            request.done(function(response) {
+                window.location.href = self.urls.home;
+            });
+            request.fail($osf.handleJSONError);
+        },
+        buttons: {
+            success: {
+                label: 'Approve'
+            }
+        }
+    });
 
 };
 RegistrationEditor.prototype.reject = function() {
     var self = this;
 
-    $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+    var message = '<p>This submission will be removed from the review process on rejection.';
 
-    window.location.href = self.urls.home;
+    $osf.confirmDangerousAction({
+        title: 'Are you sure you want to reject this submission? A notification will be sent to the user explaining that this submission is not eligible for the Pre-Reg Prize.',
+        message: message,
+        callback: function () {
+            var request = $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+            request.done(function(response) {
+                window.location.href = self.urls.home;
+            });
+            request.fail($osf.handleJSONError);
+        },
+        buttons: {
+            success: {
+                label: 'Reject'
+            }
+        }
+    });
+
 };
 // TODO[lauren]: add additional logic so it differs from rejection
 RegistrationEditor.prototype.requestRevisions = function() {
     var self = this;
 
-    $osf.postJSON(self.urls.request_revisions.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+    var message = '<p>This submission will be unlocked for the user upon revisions requested.';
 
-    window.location.href = self.urls.home;
+    $osf.confirmDangerousAction({
+        title: 'Are you sure you want to request revisions for this submission? A notification will be sent to the user explaining that this submission needs some changes before approval will be granted. This also unlocks the draft so that the submitter can edit and resubmit.',
+        message: message,
+        callback: function () {
+            var request = $osf.postJSON(self.urls.request_revisions.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
+            request.done(function(response) {
+                window.location.href = self.urls.home;
+            });
+            request.fail($osf.handleJSONError);
+        },
+        buttons: {
+            success: {
+                label: 'Request Revisions'
+            }
+        }
+    });
+    
 };
 
 var RegistrationManager = function(node, draftsSelector, urls) {
