@@ -10,7 +10,10 @@ $(document).ready(function() {
 	var draftEditor = new RegistrationEditor({
 	    schemas: '/get-schemas/',
 	    update: '/update-draft/{draft_pk}/',
-	    //get: node.urls.api + 'draft/{draft_pk}/'
+	    approve: '/approve-draft/{draft_pk}/',
+	    reject: '/reject-draft/{draft_pk}/',
+	    request_revisions: '/reject-draft/{draft_pk}/',
+	    home: '/prereg/'
 	}, 'registrationEditor');
 
 	var draft = new registrationUtils.Draft(params);

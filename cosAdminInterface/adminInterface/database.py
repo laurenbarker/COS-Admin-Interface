@@ -9,7 +9,7 @@ from modularodm import storage
 from utils import submodule_path
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
-from website.project.model import MetaSchema, DraftRegistration, Node
+from website.project.model import MetaSchema, DraftRegistration, Node, DraftRegistrationApproval
 from framework.mongo.utils import get_or_http_error
 from framework.auth.core import User
 from framework.auth import Auth
@@ -24,8 +24,7 @@ do_set_backends(osf_settings)
 adminUser = User.load('dsmpw')
 
 def get_all_drafts():
-	# TODO
-	# add query parameters to only retrieve submitted drafts
+	# TODO[lauren]: add query parameters to only retrieve submitted drafts, they will have an approval associated with them
 	all_drafts = DraftRegistration.find()
 
 	auth = Auth(adminUser)
@@ -54,6 +53,15 @@ def get_draft_obj(draft_pk):
     )
 
 	return draft[0], auth
+
+def get_approval_obj(approval_pk):
+	auth = Auth(adminUser)
+	
+	approval= DraftRegistrationApproval.find(
+        Q('_id', 'eq', approval_pk)
+    )
+
+	return approval[0], auth
 
 def get_schema():
 	all_schemas = MetaSchema.find()

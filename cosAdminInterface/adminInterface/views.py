@@ -1,4 +1,4 @@
-from database import get_all_drafts, get_schema, get_draft, get_draft_obj
+from database import get_all_drafts, get_schema, get_draft, get_draft_obj, get_approval_obj
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
@@ -14,10 +14,11 @@ import httplib as http
 
 from modularodm import Q
 
-from utils import submodule_path, serialize_draft_registration
+from utils import submodule_path, serialize_draft_registration, serialize_draft_registration_approval
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
-from website.project.model import MetaSchema
+from framework.auth.core import User as osf_user
+from website.project.model import MetaSchema, DraftRegistrationApproval
 from framework.mongo.utils import get_or_http_error
 
 from adminInterface.forms import RegistrationForm, LoginForm
@@ -121,10 +122,49 @@ def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
 
-# TODO update so works in this context
 @login_required
 @csrf_exempt
-def update_draft(request, draft_pk): # (auth, node, draft_pk, *args, **kwargs):
+def approve_draft(request, draft_pk):
+
+	draft = get_draft_obj(draft_pk)
+
+	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
+	# params for approve function = self, user, and token 
+	# user should be the admin 
+	user = osf_user.load('dsmpw')
+	draftRegistrationApproval = draft[0].approval
+	
+	draftRegistrationApproval.add_authorizer(user)
+	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
+	draftRegistrationApproval.approve(user, token)
+	draftRegistrationApproval.save()
+
+	response = serialize_draft_registration_approval(draftRegistrationApproval)
+	return HttpResponse(json.dumps(response), content_type='application/json')
+
+@login_required
+@csrf_exempt
+def reject_draft(request, draft_pk):
+	draft = get_draft_obj(draft_pk)
+
+	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
+	# need to pass self, user, and token
+	# user should be the admin 
+	user = osf_user.load('dsmpw')
+	draftRegistrationApproval = draft[0].approval
+	
+	draftRegistrationApproval.add_authorizer(user)
+	token = draftRegistrationApproval.approval_state[user._id]['rejection_token']
+
+	draftRegistrationApproval.reject(user, token)
+	draftRegistrationApproval.save()
+
+	response = serialize_draft_registration_approval(draftRegistrationApproval)
+	return HttpResponse(json.dumps(response), content_type='application/json')
+	
+@login_required
+@csrf_exempt
+def update_draft(request, draft_pk):
 	
 	get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
 
