@@ -24,8 +24,7 @@ do_set_backends(osf_settings)
 adminUser = User.load('dsmpw')
 
 def get_all_drafts():
-	# TODO
-	# add query parameters to only retrieve submitted drafts
+	# TODO[lauren]: add query parameters to only retrieve submitted drafts, they will have an approval associated with them
 	all_drafts = DraftRegistration.find()
 
 	auth = Auth(adminUser)

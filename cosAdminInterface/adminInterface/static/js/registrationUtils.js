@@ -373,7 +373,7 @@ var Draft = function(params, metaSchema) {
 
     //TODO[lauren]: make observables to support draft approval states
     self.isPendingReview = params.flags.isPendingReview || false;
-    self.requiresApproval = params.requiresApproval || false;
+    self.requiresApproval = params.requires_approval || false;
     self.isApproved = params.flags.isApproved || true;
     self.approval = params.approval || {};
 
@@ -813,6 +813,11 @@ RegistrationEditor.prototype.approve = function() {
         callback: function () {
             var request = $osf.postJSON(self.urls.approve.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
             request.done(function(response) {
+                // TODO[lauren]: make response be a draftregistration object 
+                // response.flags.update({
+                //     'isPendingReview': False,
+                //     'isApproved': True
+                // });
                 window.location.href = self.urls.home;
             });
             request.fail($osf.handleJSONError);
@@ -836,6 +841,11 @@ RegistrationEditor.prototype.reject = function() {
         callback: function () {
             var request = $osf.postJSON(self.urls.reject.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
             request.done(function(response) {
+                // TODO[lauren]: make response be a draftregistration object 
+                // response.flags.update({
+                //     'isPendingReview': False,
+                //     'isApproved': False
+                // });
                 window.location.href = self.urls.home;
             });
             request.fail($osf.handleJSONError);
@@ -860,6 +870,11 @@ RegistrationEditor.prototype.requestRevisions = function() {
         callback: function () {
             var request = $osf.postJSON(self.urls.request_revisions.replace('{draft_pk}', self.draft().pk), {}).then(self.updateData.bind(self));
             request.done(function(response) {
+                // TODO[lauren]: make response be a draftregistration object 
+                // response.flags.update({
+                //     'isPendingReview': False,
+                //     'isApproved': False
+                // });
                 window.location.href = self.urls.home;
             });
             request.fail($osf.handleJSONError);

@@ -18,7 +18,7 @@ def serialize_draft_registration_approval(approval, auth=None):
         '_id': approval._id, 
         'end_date': iso8601format(approval.end_date), 
         '_version': approval._version, 
-        # list of user ids for users with tokens
+        # list of user ids for authorizers with tokens
         'approval_state': approval.approval_state.keys(), 
         'state': approval.state, 
         'initiation_date': iso8601format(approval.initiation_date)

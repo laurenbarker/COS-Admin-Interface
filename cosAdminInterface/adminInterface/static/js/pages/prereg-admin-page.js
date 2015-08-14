@@ -143,7 +143,7 @@ var Row = function(params, permission, reviewers) {
     self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
     self.updated = self.formatTime(params.updated);
-    // change to computed function
+    // TODO[lauren]: change to computed function based on flags
     self.status = ko.observable(params.approval.state);
     
     //variables for editing items in row

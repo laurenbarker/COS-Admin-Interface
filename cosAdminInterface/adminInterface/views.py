@@ -128,7 +128,8 @@ def approve_draft(request, draft_pk):
 
 	draft = get_draft_obj(draft_pk)
 
-	# need to pass self, user, and token
+	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
+	# params for approve function = self, user, and token 
 	# user should be the admin 
 	user = osf_user.load('dsmpw')
 	draftRegistrationApproval = draft[0].approval
@@ -146,6 +147,7 @@ def approve_draft(request, draft_pk):
 def reject_draft(request, draft_pk):
 	draft = get_draft_obj(draft_pk)
 
+	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
 	# need to pass self, user, and token
 	# user should be the admin 
 	user = osf_user.load('dsmpw')

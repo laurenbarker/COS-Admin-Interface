@@ -6,7 +6,7 @@ var $osf = require('js/osfHelpers');
 $(document).ready(function() {
 
 	var params = context[0];
-	// TODO: add approve, reject, and request revision urls
+
 	var draftEditor = new RegistrationEditor({
 	    schemas: '/get-schemas/',
 	    update: '/update-draft/{draft_pk}/',
@@ -14,7 +14,6 @@ $(document).ready(function() {
 	    reject: '/reject-draft/{draft_pk}/',
 	    request_revisions: '/reject-draft/{draft_pk}/',
 	    home: '/prereg/'
-	    //get: node.urls.api + 'draft/{draft_pk}/'
 	}, 'registrationEditor');
 
 	var draft = new registrationUtils.Draft(params);
