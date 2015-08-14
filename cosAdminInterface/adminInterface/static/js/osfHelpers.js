@@ -2,6 +2,7 @@
 var ko = require('knockout');
 var $ = require('jquery');
 var URI = require('URIjs');
+var bootbox = require('bootbox');
 
 /**
  * Generate OSF absolute URLs, including prefix and arguments. Assumes access to mako globals for pieces of URL.
@@ -224,6 +225,118 @@ function not(any) {
     };
 }
 
+/**
+  * Confirm a dangerous action by requiring the user to enter specific text
+  *
+  * This is an abstraction over bootbox, and passes most options through to
+  * bootbox.dailog(). The exception to this is `callback`, which is called only
+  * if the user correctly confirms the action.
+  *
+  * @param  {Object} options
+  */
+var confirmDangerousAction = function (options) {
+    // TODO: Refactor this to be more interactive - use a ten-key-like interface
+    //       and display one character at a time for the user to enter. Once
+    //       they enter that character, display another. This will require more
+    //       sustained attention and will prevent the user from copy/pasting a
+    //       random string.
+
+    var confirmationString = _confirmationString();
+
+    // keep the users' callback for re-use; we'll pass ours to bootbox
+    var callback = options.callback;
+    delete options.callback;
+
+    // this is our callback
+    var handleConfirmAttempt = function () {
+        var verified = ($('#bbConfirmText').val() === confirmationString);
+
+        if (verified) {
+            callback();
+        } else {
+            growl('Verification failed', 'Strings did not match');
+        }
+    };
+
+    var defaults = {
+        title: 'Confirm action',
+        confirmText: confirmationString,
+        buttons: {
+            cancel: {
+                label: 'Cancel',
+                className: 'btn-default'
+            },
+            success: {
+                label: 'Confirm',
+                className: 'btn-danger',
+                callback: handleConfirmAttempt
+            }
+        },
+        message: ''
+    };
+
+    var bootboxOptions = $.extend(true, {}, defaults, options);
+
+    bootboxOptions.message += [
+        '<p>Type the following to continue: <strong>',
+        confirmationString,
+        '</strong></p>',
+        '<input id="bbConfirmText" class="form-control">'
+    ].join('');
+
+    bootbox.dialog(bootboxOptions);
+};
+
+/**
+*  returns a random name from this list to use as a confirmation string
+*/
+var _confirmationString = function() {
+    // TODO: Generate a random string here instead of using pre-set values
+    //       per Jeff, use ~10 characters
+    var scientists = [
+        'Anning',
+        'Banneker',
+        'Cannon',
+        'Carver',
+        'Chappelle',
+        'Curie',
+        'Divine',
+        'Emeagwali',
+        'Fahlberg',
+        'Forssmann',
+        'Franklin',
+        'Herschel',
+        'Hodgkin',
+        'Hopper',
+        'Horowitz',
+        'Jemison',
+        'Julian',
+        'Kovalevsky',
+        'Lamarr',
+        'Lavoisier',
+        'Lovelace',
+        'Massie',
+        'McClintock',
+        'Meitner',
+        'Mitchell',
+        'Morgan',
+        'Odum',
+        'Pasteur',
+        'Pauling',
+        'Payne',
+        'Pearce',
+        'Pollack',
+        'Rillieux',
+        'Sanger',
+        'Somerville',
+        'Tesla',
+        'Tyson',
+        'Turing'
+    ];
+
+    return scientists[Math.floor(Math.random() * scientists.length)];
+};
+
 module.exports = {
     postJSON: postJSON,
     putJSON: putJSON,
@@ -233,5 +346,6 @@ module.exports = {
     isBlank: isBlank,
     iterObject: iterObject,
     indexOf: indexOf,
-    not: not
+    not: not,
+    confirmDangerousAction: confirmDangerousAction
 };
