@@ -29,7 +29,6 @@ class CustomUserAdmin(UserAdmin):
     		if user.is_active == False:
     			user.is_active = True;
     			user.save()
-	    	print(user.email)
     		reset_form = PasswordResetForm({'email': user.email}, request.POST)
            	assert reset_form.is_valid()
            	reset_form.save(
