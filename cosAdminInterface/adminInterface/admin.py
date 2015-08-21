@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.forms import PasswordResetForm, UserCreationForm
-from django.utils.crypto import get_random_string
 
 class PermissionAdmin(admin.ModelAdmin):
 	search_fields = ['name', 'codename']
