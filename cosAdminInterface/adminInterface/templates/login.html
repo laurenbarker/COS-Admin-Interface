@@ -27,6 +27,12 @@
       <div class="login-logo">
         <a href="../../index2.html"><b>OSF</b>Admin</a>
       </div><!-- /.login-logo -->
+      {% if messages %}
+      {{message.count}}
+        {% for message in messages %}
+          <span class="text-success"> {{ message }}</span>
+        {% endfor %}
+      {% endif %}
       <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
         <form action="" method="post">

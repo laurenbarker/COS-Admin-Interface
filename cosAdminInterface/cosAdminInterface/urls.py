@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
 	url(r'^$', 'adminInterface.views.home', name='home'),
@@ -17,6 +18,11 @@ urlpatterns = [
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
 	url(r'^get-schemas/$', 'adminInterface.views.get_schemas', name='get_schemas'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        'adminInterface.views.password_reset_confirm_custom', name='password_reset_confirm'),
+    url(r'^reset/done/$', 'adminInterface.views.password_reset_done',
+    	name='password_reset_complete'),
+    url('^', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
