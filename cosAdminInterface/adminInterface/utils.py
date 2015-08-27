@@ -42,8 +42,8 @@ def serialize_draft_registration(draft, auth=None):
         'updated': str(draft.datetime_updated),
         'flags': draft.flags,
         'requires_approval': draft.requires_approval,
-        'is_pending_approval': draft.is_pending_review,
-        'is_approved': draft.is_approved,
+        #'is_pending_approval': draft.is_pending_review,
+        #'is_approved': draft.is_approved,
         'approval': serialize_draft_registration_approval(draft.approval)
         # 'urls': {
         #     'edit': node.web_url_for('edit_draft_registration_page', draft_id=draft._id),
