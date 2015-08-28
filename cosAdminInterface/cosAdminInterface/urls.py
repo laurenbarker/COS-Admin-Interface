@@ -15,6 +15,7 @@ urlpatterns = [
 	url(r'^approve-draft/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.approve_draft', name='approve_draft'),
 	url(r'^reject-draft/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.reject_draft', name='reject_draft'),
 	url(r'^update-draft/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.update_draft', name='update_draft'),
+	url(r'^view-file/(?P<file_name>[0-9a-z]+)/$', 'adminInterface.views.view_file', name='view_file'),
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
 	url(r'^get-schemas/$', 'adminInterface.views.get_schemas', name='get_schemas'),
     url(r'^admin/', include(admin.site.urls)),

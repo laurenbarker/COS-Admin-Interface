@@ -20,6 +20,7 @@ var entry = {
     'prereg-admin-page': staticPath('js/pages/prereg-admin-page.js'),
     'app.min': staticPath('js/app.min.js'),
     'registration-edit-page': staticPath('js/pages/registration-edit-page.js'),
+    'file-page': staticPath('js/pages/file-page.js'),
     // Commons chunk
     'vendor': [
         // Vendor libraries
@@ -32,8 +33,6 @@ var entry = {
         'moment',
         'raven-js',
         'mithril'
-        // common internal modules
-        //'js/osfHelpers'
     ]
 };
 

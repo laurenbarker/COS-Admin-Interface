@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load staticfiles %}
+
+{% block content %}
+{% render_bundle 'vendor' %}
+
+<div class="row">
+  <div class="col-sm-5">
+    <h2 class="break-word">
+      {{file_name | safe}}
+    </h2>
+  </div>
+  <div class="col-sm-7">
+    <div id="toggleBar" class="pull-right"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+<!-- The osf-logo spinner here is from mfr code base -->
+  <div id="fileViewPanelLeft" class="col-sm-9 panel-expand">
+    <div class="row">
+        <div id="externalView" class="col-sm-9"></div>
+        <div id="mfrIframeParent" class="col-sm-9">
+        <div id="mfrIframe" class="mfr mfr-file"></div>
+      </div>
+
+    <!-- This section is built by mithril in revisions.js -->
+      <div class="file-view-panels col-sm-3"></div>
+    </div>
+  </div>
+
+</div>
+<script src="{{mfr_path|safe}}/static/js/mfr.js"></script>
+{% render_bundle 'file-page' %}
+{% endblock %}

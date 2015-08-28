@@ -11,6 +11,10 @@ sys.path.insert(0, submodule_path('utils.py'))
 from framework.utils import iso8601format
 from website.project.metadata.utils import serialize_meta_schema
 from website.project.model import Node
+from website import settings
+
+def mfr_path(file):
+    return settings.MFR_SERVER_URL
 
 def serialize_draft_registration_approval(approval, auth=None):
     

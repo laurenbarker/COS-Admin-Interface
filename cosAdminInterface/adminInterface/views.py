@@ -17,7 +17,7 @@ import httplib as http
 
 from modularodm import Q
 
-from utils import submodule_path, serialize_draft_registration, serialize_draft_registration_approval
+from utils import submodule_path, mfr_path, serialize_draft_registration, serialize_draft_registration_approval
 import sys
 sys.path.insert(0, submodule_path('utils.py'))
 from framework.auth.core import User as osf_user
@@ -214,3 +214,10 @@ def update_draft(request, draft_pk):
 	    raise HTTPError(http.BAD_REQUEST)
 	response = serialize_draft_registration(draft[0], draft[1])
 	return HttpResponse(json.dumps(response), content_type='application/json')
+
+@login_required
+@csrf_exempt
+def view_file(request, file_name):
+
+	context = {'mfr_path': mfr_path('utils.py'), 'file_name': file_name}
+	return render(request, 'prereg/view_file.html', context)
