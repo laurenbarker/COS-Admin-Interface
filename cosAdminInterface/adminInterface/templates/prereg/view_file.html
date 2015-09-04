@@ -4,11 +4,13 @@
 
 {% block content %}
 {% render_bundle 'vendor' %}
-
+<script>
+   var file_info = {{ file_name|safe }};
+</script>
 <div class="row">
   <div class="col-sm-5">
     <h2 class="break-word">
-      {{file_name | safe}}
+      {{ file_name|safe }}
     </h2>
   </div>
   <div class="col-sm-7">
