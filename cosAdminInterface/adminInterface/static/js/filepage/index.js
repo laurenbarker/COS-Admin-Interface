@@ -26,7 +26,7 @@ var FileViewPage = {
         self.node = self.context.node;
         self.editorMeta = self.context.editor;
         //Force canEdit into a bool
-        self.canEdit = m.prop(!!self.context.currentUser.canEdit);
+        //self.canEdit = m.prop(!!self.context.currentUser.canEdit);
 
         $.extend(self.file.urls, {
             //delete: waterbutler.buildDeleteUrl(self.file.path, self.file.provider, self.node.id),
@@ -277,13 +277,16 @@ var FileViewPage = {
 module.exports = function(context) {
     // Treebeard forces all mithril to load twice, to avoid
     // destroying the page iframe this out side of mithril.
-    if (!context.file.urls.render) {
+    var test = false;
+    if (test === true) {
         $('#mfrIframe').html(context.file.error);
     } else {
-        var url = context.file.urls.render;
-        if (context.accessToken) {
-            url += '&token=' + context.accessToken;
-        }
+        // TODO[lauren]: this is a test 
+        var url = "https://mfr.osf.io/render?url=https://osf.io/fj2a8/?mode=render%26action=download%26accept_url=false";
+        // var url = context.file.urls.render;
+        // if (context.accessToken) {
+        //     url += '&token=' + context.accessToken;
+        // }
 
         if (window.mfr !== undefined) {
             var mfrRender = new mfr.Render('mfrIframe', url, {}, 'cos_logo.png');

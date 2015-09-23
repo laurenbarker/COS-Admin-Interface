@@ -4,8 +4,9 @@
 
 {% block content %}
 {% render_bundle 'vendor' %}
+{% render_bundle 'file-page' %}
 <script>
-   var file_info = {{ file_name|safe }};
+   var file_info = {{ url|safe }};
 </script>
 <div class="row">
   <div class="col-sm-5">
@@ -34,5 +35,4 @@
 
 </div>
 <script src="{{mfr_path|safe}}/static/js/mfr.js"></script>
-{% render_bundle 'file-page' %}
 {% endblock %}
