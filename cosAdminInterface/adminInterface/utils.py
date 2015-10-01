@@ -1,6 +1,6 @@
-import osf_settings
 import sys
 import os
+
 
 def submodule_path(file):
     path = os.path.dirname(os.path.dirname(os.path.abspath(file)))
@@ -12,26 +12,28 @@ from framework.utils import iso8601format
 from website.project.metadata.utils import serialize_meta_schema
 from website.project.model import Node
 
+
 def serialize_draft_registration_approval(approval, auth=None):
-    
+
     return {
-        '_id': approval._id, 
-        'end_date': iso8601format(approval.end_date), 
-        '_version': approval._version, 
+        '_id': approval._id,
+        'end_date': iso8601format(approval.end_date),
+        '_version': approval._version,
         # list of user ids for authorizers with tokens
-        'approval_state': approval.approval_state.keys(), 
-        'state': approval.state, 
+        'approval_state': approval.approval_state.keys(),
+        'state': approval.state,
         'initiation_date': iso8601format(approval.initiation_date)
     }
 
+
 def serialize_draft_registration(draft, auth=None):
-    
+
     import sys
     sys.path.insert(0, submodule_path('utils.py'))
     from website.profile.utils import serialize_user  # noqa
 
     node = draft.branched_from
-    
+
     return {
         'pk': draft._id,
         'branched_from': serialize_node(draft.branched_from, auth),
@@ -42,8 +44,8 @@ def serialize_draft_registration(draft, auth=None):
         'updated': str(draft.datetime_updated),
         'flags': draft.flags,
         'requires_approval': draft.requires_approval,
-        #'is_pending_approval': draft.is_pending_review,
-        #'is_approved': draft.is_approved,
+        # 'is_pending_approval': draft.is_pending_review,
+        # 'is_approved': draft.is_approved,
         'approval': serialize_draft_registration_approval(draft.approval)
         # 'urls': {
         #     'edit': node.web_url_for('edit_draft_registration_page', draft_id=draft._id),
@@ -53,6 +55,7 @@ def serialize_draft_registration(draft, auth=None):
         #     'registrations': node.web_url_for('node_registrations')
         # }
     }
+
 
 def serialize_node(node, auth, primary=False):
     """Build a JSON object containing everything needed to render
