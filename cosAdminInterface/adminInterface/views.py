@@ -1,12 +1,15 @@
 from database import get_all_drafts, get_schema, get_draft, get_draft_obj, get_approval_obj
 
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
+from django.contrib import messages
+from django.contrib.auth import authenticate, logout as logout_user, login as auth_login, views
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordChangeForm
+from django.utils.http import urlsafe_base64_decode
 
 import json
 import utils
@@ -63,12 +66,12 @@ def register(request):
 			return redirect('/')
 		else:
 			context = {'form': form}
-			return render(request, 'register.html', context)
+			return render(request, 'registration/register.html', context)
 	else:
 		''' User not submitting form, show blank registrations form '''
 		form = RegistrationForm()
 		context = {'form': form}
-		return render(request, 'register.html', context)
+		return render(request, 'registration/register.html', context)
 
 def login(request):
 	if request.user.is_authenticated():
@@ -89,6 +92,24 @@ def login(request):
 def logout(request):
 	logout_user(request)
 	return redirect('/login/')
+
+def password_reset_done(request, **kwargs):
+	messages.success(request, 'You have successfully reset your password and activated your admin account. Thank you')
+	return login(request)
+
+def password_reset_confirm_custom(request, **kwargs):
+	response = views.password_reset_confirm(request, **kwargs)
+	# i.e. if the user successfully resets their password
+	if response.status_code == 302:
+		try:
+			uid = urlsafe_base64_decode(kwargs['uidb64'])
+			user = User.objects.get(pk=uid)
+		except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+			pass
+		else:
+			user.is_active = True
+			user.save()
+	return response
 
 @login_required
 @user_passes_test(is_in_general_administrator_group)
@@ -129,11 +150,11 @@ def approve_draft(request, draft_pk):
 	draft = get_draft_obj(draft_pk)
 
 	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
-	# params for approve function = self, user, and token 
-	# user should be the admin 
+	# params for approve function = self, user, and token
+	# user should be the admin
 	user = osf_user.load('dsmpw')
 	draftRegistrationApproval = draft[0].approval
-	
+
 	draftRegistrationApproval.add_authorizer(user)
 	token = draftRegistrationApproval.approval_state[user._id]['approval_token']
 	draftRegistrationApproval.approve(user, token)
@@ -149,10 +170,10 @@ def reject_draft(request, draft_pk):
 
 	# TODO[lauren]: add proper authorizers to DraftRegistrationApproval
 	# need to pass self, user, and token
-	# user should be the admin 
+	# user should be the admin
 	user = osf_user.load('dsmpw')
 	draftRegistrationApproval = draft[0].approval
-	
+
 	draftRegistrationApproval.add_authorizer(user)
 	token = draftRegistrationApproval.approval_state[user._id]['rejection_token']
 
@@ -161,12 +182,12 @@ def reject_draft(request, draft_pk):
 
 	response = serialize_draft_registration_approval(draftRegistrationApproval)
 	return HttpResponse(json.dumps(response), content_type='application/json')
-	
+
 @login_required
 @csrf_exempt
 def update_draft(request, draft_pk):
-	
-	get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+
+	get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
 
 	data = json.load(request)
 
