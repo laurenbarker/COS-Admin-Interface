@@ -28,6 +28,9 @@ from adminInterface.models import AdminUser
 
 
 def get_prereg_users():
+    """Retrieves users on the admin site who are in the prereg_group
+    :return: List of usernames of those who are in the prereg_group
+    """
     reviewers = []
     users = User.objects.all()
     for reviewer in users:
@@ -37,6 +40,10 @@ def get_prereg_users():
 
 
 def is_in_prereg_group(user):
+    """Determines whether a user is in the prereg_group
+    :param user: User wanting access to prereg material
+    :return: True if prereg False if not
+    """
     return user.groups.filter(name='prereg_group').exists()
 
 
