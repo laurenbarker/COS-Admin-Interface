@@ -12,11 +12,10 @@ from framework.mongo.utils import get_or_http_error
 from framework.auth.core import User
 from framework.auth import Auth
 from website.project.metadata.utils import serialize_meta_schema
+from website.app import init_app
 from website.app import do_set_backends, init_addons
 from website import settings as osf_settings
-from website.project.views.file import grid_data
-from website.app import app
-from website.util import web_url_for
+# from website import models  # all models
 
 import utils
 
@@ -35,17 +34,32 @@ def get_file_data(nid):
     # osfstoragefilenode = 5602d5847996ae03b70ca4b1
     # file_node.path = '/5602d5847996ae03b70ca4b1'
 
-    # import ipdb; ipdb.set_trace();
+    # staging
+    # nd5t7
+    # 2F55ae8124029bdb126c0e97b0
+    # https://staging-files.osf.io/file?path=%2F55ae8124029bdb126c0e97b0&provider=osfstorage&nid=e5nwa&accept_url=false&action=download
 
-    with app.test_request_context():
-        mfr_url = node.web_url_for('addon_view_or_download_file', path=file_node.path, provider='osfstorage')
-        # node.web_url_for('addon_view_or_download_file', path=file_node.path.strip('/'), provider='osfstorage', action='download', _absolute=True, method='GET')
+    # osf
+    # 3f876
+    # 2F55e86e578c5e4a582b01bfa7
+    # https://files.osf.io/file?path=%2F55e86e578c5e4a582b01bfa7&provider=osfstorage&nid=3f876&accept_url=false&action=download
 
-    # response = grid_data(auth=auth, node=node, )
+    app = init_app()
+    app.config['SERVER_NAME'] = 'localhost:5000'
+    # app.config['SERVER_NAME'] = 'osf.io:80'
+    import flask
 
-    # file_data = {
-    #     'data': response['data']
-    # }
+    with app.app_context():
+        mfr_url = flask.url_for(
+            'OsfWebRenderer__addon_view_or_download_file',
+            pid=node._id,
+            node=node,
+            path=file_node.path.strip('/'),
+            auth=auth,
+            # pid='3f876',
+            # path='2F55e86e578c5e4a582b01bfa7',
+            provider='osfstorage'
+        )
 
     return mfr_url
 
