@@ -48,11 +48,19 @@ def is_in_prereg_group(user):
 
 
 def is_in_general_administrator_group(user):
+    """Determines whether a user is in the general_administrator_group
+    :param user: User wanting access to administrator material
+    :return: True if general administrator False if not
+    """
     return user.groups.filter(name='general_administrator_group').exists()
 
 
 @login_required
 def home(request):
+    """Redirects to the home page if user is logged in
+    :param user: Current logged in user
+    :return: Redirect to home page with user obj
+    """
     context = {'user': request.user}
     return render(request, 'home.html', context)
 
@@ -135,6 +143,10 @@ def password_reset_confirm_custom(request, **kwargs):
 @login_required
 @user_passes_test(is_in_general_administrator_group)
 def users(request):
+    """Redirects to user page if user has admin access
+    :return: Redirect to user page with information for admin user management page
+    """
+    # TODO: add user information to context
     context = {}
     return render(request, 'users.html', context)
 
@@ -142,6 +154,10 @@ def users(request):
 @login_required
 @user_passes_test(is_in_prereg_group)
 def prereg(request):
+    """Redirects to prereg page if user has prereg access
+    :param request: Current logged in user
+    :return: Redirect to prereg page with username, reviewers, and user obj
+    """
     prereg_admin = request.user.has_perm('auth.prereg_admin')
     user = {
         'username': str(request.user.username),
@@ -154,14 +170,24 @@ def prereg(request):
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 def prereg_form(request, draft_pk):
+    """Redirects to prereg form review page if user has prereg access
+    :param draft_pk: Unique id for selected draft
+    :return: Redirect to prereg form review page with draft obj
+    """
     draft = get_draft(draft_pk)
     context = {'data': json.dumps(draft)}
     return render(request, 'prereg/edit_draft_registration.html', context)
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 def get_drafts(request):
+    """Determines whether a user is in the general_administrator_group
+    :param user: User wanting access to administrator material
+    :return: True if general administrator False if not
+    """
     all_drafts = get_all_drafts()
     return HttpResponse(
         json.dumps(all_drafts),
@@ -170,15 +196,24 @@ def get_drafts(request):
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 def get_schemas(request):
+    """Retrieves schema information for prereg
+    :return: JSON schemas for prereg
+    """
     schema = get_schema()
     return HttpResponse(json.dumps(schema), content_type='application/json')
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 @csrf_exempt
 def approve_draft(request, draft_pk):
-
+    """Approves current draft
+    :param user: Current logged in user
+    :param draft_pk: Unique id for current draft
+    :return: DraftRegistrationApproval obj
+    """
     draft = get_draft_obj(draft_pk)
 
     # TODO[lauren]: add proper authorizers to DraftRegistrationApproval
@@ -197,8 +232,14 @@ def approve_draft(request, draft_pk):
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 @csrf_exempt
 def reject_draft(request, draft_pk):
+    """Rejects current draft
+    :param user: Current logged in user
+    :param draft_pk: Unique id for current draft
+    :return: DraftRegistrationApproval obj
+    """
     draft = get_draft_obj(draft_pk)
 
     # TODO[lauren]: add proper authorizers to DraftRegistrationApproval
@@ -218,9 +259,14 @@ def reject_draft(request, draft_pk):
 
 
 @login_required
+@user_passes_test(is_in_prereg_group)
 @csrf_exempt
 def update_draft(request, draft_pk):
-
+    """Updates current draft to save admin comments
+    :param user: Current logged in user
+    :param draft_pk: Unique id for current draft
+    :return: DraftRegistration obj
+    """
     get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
 
     data = json.load(request)
