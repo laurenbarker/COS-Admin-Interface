@@ -20,6 +20,11 @@ ko.bindingHandlers.enterkey = {
     }
 };
 
+/**
+* Assignee column.
+*
+* @param  {List} reviewers  The prereg reviewers who can be assigned
+*/
 var Assignee = function(reviewers) {
     var self = this;
     self.edit = ko.observable(false);
@@ -48,6 +53,9 @@ Assignee.prototype.editItem = function() {
     
 };
 
+/**
+* Proof of publication column.
+*/
 var ProofOfPub = function() {
     var self = this;
     self.edit = ko.observable(false);
@@ -70,6 +78,9 @@ ProofOfPub.prototype.editItem = function() {
     self.editing(!self.editing);
 };
 
+/**
+* Payment sent column.
+*/
 var PaymentSent = function() {
     var self = this;
     self.edit = ko.observable(false);
@@ -97,6 +108,9 @@ PaymentSent.prototype.stopEditing = function() {
     self.paymentSent.edit(false);
 };
 
+/**
+* Notes column.
+*/
 var Notes = function() {
     var self = this;
     self.edit = ko.observable(false);
@@ -124,6 +138,13 @@ Notes.prototype.stopEditing = function() {
     self.notes.edit(false);
 };
 
+/**
+* The row containing the information for a single draft displayed in columns.
+*
+* @param  {Dict}    params     The draft information
+* @param  {String}  permission Whether the admin can assign a reviewer
+* @param  {List}    reviewers  The prereg reviewers who can be assigned
+*/
 var Row = function(params, permission, reviewers) {
     var self = this;
 
@@ -177,6 +198,13 @@ Row.prototype.goToDraft = function(data, event) {
     }
 };
 
+/**
+* The view containing all of the rows with draft information.
+*
+* @param  {String}  adminSelector   The class to bind to
+* @param  {String}  user            The current user
+* @param  {List}    reviewers       The prereg reviewers who can be assigned
+*/
 var AdminView = function(adminSelector, user, reviewers) {
     var self = this;
 
@@ -231,12 +259,22 @@ AdminView.prototype.setSort = function(data, event) {
     self.sortBy(event.target.id);
 };
 
+/**
+* Load values from prereg-admin-page.html.
+*/
 $(document).ready(function() {
     var user = prereg_user;
     var reviewers = prereg_reviewers;
     var adminView = new AdminView('#prereg-row', user, reviewers);
 });
 
+/**
+* Gets value from nested properties.
+*
+* @param  {Dict}    obj    The object to find value from
+* @param  {String}  path   Path to nested property
+* @return {String}  
+*/
 var deep_value = function(obj, path){
     for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
         if (obj === undefined) {
