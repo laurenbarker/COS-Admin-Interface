@@ -18,13 +18,19 @@ import utils
 
 init_addons(osf_settings, routes=False)
 do_set_backends(osf_settings)
+
+# TODO[lauren]: change once users have osf id associated with them
 adminUser = User.load('dsmpw')
 
 
 def get_all_drafts():
-    # TODO[lauren]: add query parameters to only retrieve submitted drafts, they will have an approval associated with them
+    """Retrieves all submitted prereg drafts from OSF db
+    :return: Dict of submitted prereg drafts
+    """
+    # TODO[lauren]: add query parameters to only retrieve submitted drafts
+    # they will have an approval associated with them
     all_drafts = DraftRegistration.find()
-
+    # TODO[lauren]: change to current user
     auth = Auth(adminUser)
 
     serialized_drafts = {
@@ -36,6 +42,11 @@ get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
 
 
 def get_draft(draft_pk):
+    """Retrieves a specified draft from the OSF db
+    :param draft_pk: Unique id for draft
+    :return: Serialized draft obj
+    """
+    # TODO[lauren]: change to current user
     auth = Auth(adminUser)
 
     draft = DraftRegistration.find(
@@ -46,6 +57,11 @@ def get_draft(draft_pk):
 
 
 def get_draft_obj(draft_pk):
+    """Retrieves a specified draft from the OSF db
+    :param draft_pk: Unique id for draft
+    :return: Draft obj
+    """
+    # TODO[lauren]: change to current user
     auth = Auth(adminUser)
 
     draft = DraftRegistration.find(
@@ -56,6 +72,11 @@ def get_draft_obj(draft_pk):
 
 
 def get_approval_obj(approval_pk):
+    """Retrieves a specified approval from the OSF db
+    :param approval_pk: Unique id for approval
+    :return: Approval obj
+    """
+    # TODO[lauren]: change to current user
     auth = Auth(adminUser)
 
     approval = DraftRegistrationApproval.find(
@@ -65,7 +86,10 @@ def get_approval_obj(approval_pk):
     return approval[0], auth
 
 
-def get_schema():
+def get_metaschemas():
+    """Retrieves all MetaSchemas from the OSF db
+    :return: Dict of serialized MetaSchemas
+    """
     all_schemas = MetaSchema.find()
     serialized_schemas = {
         'schemas': [utils.serialize_meta_schema(s) for s in all_schemas]
@@ -74,6 +98,11 @@ def get_schema():
 
 
 def get_metaschema(schema_name, schema_version=1):
+    """Retrieves a specified MetaSchemas from the OSF db
+    :param schema_name: name of schema to retrieve
+    :param schema_version: version of schema to retrieve
+    :return: Serialized MetaSchema
+    """
     meta_schema = get_schema_or_fail(
         Q('name', 'eq', schema_name) &
         Q('schema_version', 'eq', schema_version)

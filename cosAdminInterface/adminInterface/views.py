@@ -1,4 +1,4 @@
-from database import get_all_drafts, get_schema, get_draft, get_draft_obj
+from database import get_all_drafts, get_metaschemas, get_draft, get_draft_obj
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login, views
@@ -201,7 +201,7 @@ def get_schemas(request):
     """Retrieves schema information for prereg
     :return: JSON schemas for prereg
     """
-    schema = get_schema()
+    schema = get_metaschemas()
     return HttpResponse(json.dumps(schema), content_type='application/json')
 
 
