@@ -3,10 +3,15 @@ import os
 
 
 def submodule_path(file):
+    """Gets path to submodule
+    :param file: File in application directory
+    :return: Path to submodule
+    """
     path = os.path.dirname(os.path.dirname(os.path.abspath(file)))
     path = path + '/cosAdminInterface/adminInterface/osf.io/'
     return path
 
+# add submodule to paths
 sys.path.insert(0, submodule_path('utils.py'))
 from framework.utils import iso8601format
 from website.project.metadata.utils import serialize_meta_schema
@@ -14,7 +19,10 @@ from website.project.model import Node
 
 
 def serialize_draft_registration_approval(approval, auth=None):
-
+    """Build a JSON object of a DraftRegistrationApproval object
+    :param approval: DraftRegistrationApproval object
+    :return: Serialized DraftRegistrationApproval object
+    """
     return {
         '_id': approval._id,
         'end_date': iso8601format(approval.end_date),
@@ -27,12 +35,15 @@ def serialize_draft_registration_approval(approval, auth=None):
 
 
 def serialize_draft_registration(draft, auth=None):
-
+    """Build a JSON object of a DraftRegistration object without urls
+    :param draft: DraftRegistration object
+    :return: Serialized DraftRegistration object
+    """
     import sys
     sys.path.insert(0, submodule_path('utils.py'))
     from website.profile.utils import serialize_user  # noqa
 
-    node = draft.branched_from
+    # node = draft.branched_from
 
     return {
         'pk': draft._id,
@@ -58,8 +69,10 @@ def serialize_draft_registration(draft, auth=None):
 
 
 def serialize_node(node, auth, primary=False):
-    """Build a JSON object containing everything needed to render
-    project.view.mako.
+    """Build a JSON object of a node
+    :param node: Node object
+    :param auth: Auth oject of current user
+    :return: Serialized node object
     """
     user = auth.user
 
