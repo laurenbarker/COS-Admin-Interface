@@ -1,5 +1,6 @@
 amqp==1.4.6
 anyjson==0.3.3
+appnope==0.1.0
 argh==0.26.1
 arrow==0.4.4
 Babel==1.3
@@ -15,6 +16,7 @@ celery==3.1.17
 certifi==2015.4.28
 curdling==0.4.0
 -e git+https://github.com/IQSS/dataverse-client-python.git@b6aec5bc3fd1cc3199e3c97ac9c71705b54c3d11#egg=dataverse-dev
+decorator==4.0.2
 distlib==0.1.2
 Django==1.8
 django-rest-swagger==0.3.2
@@ -28,6 +30,7 @@ fake-factory==0.5.0
 feedparser==5.2.0
 flake8==2.4.0
 Flask==0.10.1
+functools32==3.2.3.post2
 furl==0.4.4
 future==0.14.1
 github3.py==0.9.0
@@ -42,6 +45,7 @@ ipdb==0.8.1
 ipython==3.2.0
 itsdangerous==0.24
 Jinja2==2.7.3
+jsonschema==2.5.1
 kombu==3.0.26
 livereload==2.3.2
 lxml==3.4.1
@@ -60,6 +64,7 @@ nose==1.3.6
 oath==1.2
 oauthlib==0.7.2
 orderedmultidict==0.7.5
+path.py==8.1.1
 pathtools==0.1.2
 pep8==1.5.7
 Pillow==2.4.0
@@ -79,6 +84,7 @@ raven==5.1.1
 requests==2.5.3
 requests-oauthlib==0.5.0
 responses==0.3.0
+simplegeneric==0.8.1
 six==1.9.0
 tornado==4.1
 uritemplate.py==0.3.0
